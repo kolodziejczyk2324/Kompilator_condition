@@ -1,0 +1,24 @@
+VAR
+	a b c
+BEGIN
+	a := 15;
+	b := 33;
+	WRITE b;
+	c := a + b;
+	WRITE c;
+	b := b + 1;
+	c := c + c;
+	WRITE c;
+	WRITE a;
+	WRITE b;
+	WRITE c;
+END
+
+OUTPUT
+33
+48
+96
+15
+34
+96
+ENDOUTPUT

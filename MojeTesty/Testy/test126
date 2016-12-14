@@ -1,0 +1,38 @@
+VAR
+	a
+BEGIN
+	IF 12 > 13 THEN
+		IF 4 > 4 THEN
+			WRITE 2;
+		ELSE
+			IF 8 > 10 THEN 
+				WRITE 1;
+			ELSE
+				WRITE 10;
+			ENDIF
+		ENDIF
+	ELSE
+		IF 6 > 6 THEN
+			WRITE 0;
+		ELSE
+			IF 6 > 1 THEN
+				SKIP;
+				IF 123 > 123 THEN
+					WRITE 99;
+				ELSE
+					WRITE 1010;
+				ENDIF
+			ELSE
+				SKIP;
+			ENDIF
+		ENDIF
+	ENDIF
+	WRITE 123;
+	WRITE 12;
+END
+
+OUTPUT
+1010
+123
+12
+ENDOUTPUT

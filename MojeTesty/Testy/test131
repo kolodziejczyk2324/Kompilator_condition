@@ -1,0 +1,13 @@
+VAR
+	a[4] i
+BEGIN
+	a[2] := 5;
+	i := a[2];
+	WRITE i;
+	i := a;
+	WRITE a[1];
+END
+
+OUTPUT
+Blad. Niewlasciwe uzycie identyfikatora "a" w linii 7
+ENDOUTPUT

@@ -1,0 +1,11 @@
+VAR
+	a b
+BEGIN
+	a := 12;
+	b := 154 - 150;
+	WRITE b;
+END
+
+OUTPUT
+4
+ENDOUTPUT

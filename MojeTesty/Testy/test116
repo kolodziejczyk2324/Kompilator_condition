@@ -1,0 +1,12 @@
+VAR
+	a b
+BEGIN
+	a := 15;
+	b := 33;
+	c := a + b;
+	WRITE c;
+END
+
+OUTPUT
+Blad. Niezadeklarowana zmienna "c" w linii 6
+ENDOUTPUT

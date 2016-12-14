@@ -1,0 +1,30 @@
+VAR
+	a[4] b
+BEGIN
+	a[0] := 5;
+	a[1] := 6;
+	a[2] := 5;
+	b := 7;
+	a[3] := a[1] + b;
+	IF a[0] = 1 THEN
+		WRITE 1;
+	ELSE
+		WRITE 2;
+	ENDIF
+	IF a[1] = 6 THEN
+		WRITE a[3];
+	ELSE
+		WRITE 4;
+	ENDIF
+	IF a[3] = 14  THEN
+		WRITE 5;
+	ELSE
+		WRITE a[3];
+	ENDIF
+END
+
+OUTPUT
+2
+13
+13
+ENDOUTPUT

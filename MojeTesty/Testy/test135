@@ -1,0 +1,28 @@
+VAR
+	a[4]
+BEGIN
+	a[0] := 5;
+	a[1] := 6;
+	a[2] := 5;
+	IF 3 = 1 THEN
+		WRITE 1;
+	ELSE
+		WRITE 2;
+	ENDIF
+	IF 3 = 3 THEN
+		WRITE 3;
+	ELSE
+		WRITE 4;
+	ENDIF
+	IF 10 = 5 THEN
+		WRITE 5;
+	ELSE
+		WRITE 6;
+	ENDIF
+END
+
+OUTPUT
+2
+3
+6
+ENDOUTPUT

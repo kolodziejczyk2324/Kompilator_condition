@@ -1,0 +1,32 @@
+VAR
+	a[4] b
+BEGIN
+	a[0] := 5;
+	a[1] := 6;
+	a[2] := 5;
+	b := 5;
+	a[3] := a[1] + b;
+	IF 4 >= a[0] THEN
+		a[0] := a[0] + b;
+		WRITE 1;
+	ELSE
+		a[0] := 20 - a[0];
+		WRITE 2;
+	ENDIF
+	IF 15 >= a[0] THEN
+		a[0] := a[0] - 1;
+	ELSE
+		a[1] := a[0] - 2;
+		WRITE 4;
+	ENDIF
+	IF 15 >= a[0]  THEN
+		WRITE a[0];
+	ELSE
+		WRITE 154;
+	ENDIF
+END
+
+OUTPUT
+2
+14
+ENDOUTPUT

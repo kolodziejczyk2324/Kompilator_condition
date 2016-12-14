@@ -1,0 +1,206 @@
+%{
+#include <cstdio>
+#include <iostream>
+#include <math.h>
+#include <vector>
+#include <map>
+#include <stack>
+#include <string>
+#include <sstream>
+#include "Biblioteki/library.h"
+#include "Biblioteki/MyStack.h"
+
+#define STORE(X) code.push_back(concatStringInt("STORE ", X));
+#define LOAD(X) code.push_back(concatStringInt("LOAD ", X));
+#define ADD(X) code.push_back(concatStringInt("ADD ", X));
+#define SUB(X) code.push_back(concatStringInt("SUB ", X));
+#define PUT(X) code.push_back(concatStringInt("PUT ", X));
+#define GET(X) code.push_back(concatStringInt("GET ", X));
+#define COPY(X) code.push_back("COPY " + X);
+#define ZERO(X) code.push_back(concatStringInt("ZERO ", X));
+#define JZERO(X, Y) code.push_back(concatStringInt("JZERO ", X)+string(" ")+Y);
+#define JUMP(X) code.push_back("JUMP " + X);
+
+#define PUSH_ETYK(X) etykiety.push(concatStringInt("E", X));
+#define POP_AND_WRITE_ETYK code.push_back(etykiety.pop());
+
+using namespace std;
+
+void yyerror(const char *s);
+void check_identifier(string name);
+
+extern "C" int yylex();
+extern int yylineno;
+
+struct var_data{
+	int store;
+};
+
+vector<string> code;
+map<string, struct var_data> zmienne;
+MyStack etykiety;
+int i = 1;
+int ety = 1;
+
+%}
+%union {
+	int	ival;
+        char*	sval;
+}
+
+%type <ival> identifier
+
+%token <sval> IDENTIFIER
+%token VAR _BEGIN END READ WRITE SKIP
+%token IF THEN ELSE ENDIF
+%token GT
+%token SREDNIK 
+%token PRZYPISANIE 
+%token PLUS MINUS
+%token <ival>NUMBER
+
+%start program
+%%
+
+program:	VAR vdeclarations _BEGIN commands END
+	;
+
+vdeclarations:	
+	|	vdeclarations IDENTIFIER	{	struct var_data v = { i++ };
+							zmienne[$2] = v;				}
+	;
+commands:	commands command
+	|	command
+	;
+command:	READ IDENTIFIER SREDNIK		{	check_identifier($2);
+							create_number(code, zmienne[$2].store, 0);
+							GET(1) 
+							STORE(1)					}								
+	|	WRITE NUMBER SREDNIK		{	create_number(code, $2, 1); 
+							PUT(1)						}
+	|	WRITE identifier SREDNIK	{       COPY(1)
+							LOAD(1)
+							PUT(1)						} 
+	|	identifier PRZYPISANIE exp SREDNIK {	COPY(1)
+							STORE(1)					}
+        /***********************************************************************************************/
+        /********** IF *********************************************************************************/
+        /***********************************************************************************************/
+        |       IF                              {       PUSH_ETYK(ety+1) PUSH_ETYK(ety)
+                                                        PUSH_ETYK(ety+1) PUSH_ETYK(ety) ety+=2;         }
+                condition                       {       JZERO(1, etykiety.pop())			}
+                THEN
+                commands                        {       JUMP(etykiety.pop())
+                                                        POP_AND_WRITE_ETYK				}
+                ELSE
+                commands
+                ENDIF                           {       POP_AND_WRITE_ETYK				}
+	|	SKIP SREDNIK			{ }		
+	;
+exp:		value
+	/***********************************************************************************************/
+	/********* DODAWANIE ***************************************************************************/
+	/***********************************************************************************************/
+	|	NUMBER PLUS NUMBER		{	create_number(code, $1+$3, 1);			}
+	|	identifier PLUS NUMBER		{	COPY(1)
+							create_number(code, $3, 1);
+							ADD(1)						}
+	|	NUMBER PLUS identifier		{	COPY(1)
+							create_number(code, $1, 1);
+							ADD(1)						}
+	|	identifier			{	COPY(1)						} 
+		PLUS identifier			{	LOAD(1)
+								create_number(code, $3, 0);
+								ADD(1)					}
+	/************************************************************************************************/
+	/******** ODEJMOWANIE ***************************************************************************/
+	/************************************************************************************************/
+	|	NUMBER MINUS NUMBER		{	create_number(code, numbSub($1, $3), 1);	}
+	|	identifier MINUS NUMBER		{	create_number(code, $3, 1);
+							ZERO(0)
+							STORE(1)				
+							create_number(code, $1, 0);
+							LOAD(1)
+							ZERO(0)
+							SUB(1)						}
+	|	NUMBER MINUS identifier		{	create_number(code, $3, 0);
+							create_number(code, $1, 1);
+							SUB(1)						}
+	|	identifier MINUS identifier	{	create_number(code, $1, 0);
+							LOAD(1)
+							create_number(code, $3, 0);
+							SUB(1)						}
+	/***********************************************************************************************/
+	/********** WARUNKI ****************************************************************************/
+	/***********************************************************************************************/
+	/**********    >    ****************************************************************************/
+	/***********************************************************************************************/
+condition:	NUMBER GT NUMBER		{	create_number(code, numbSub($1, $3), 1);	}
+	;
+value:		NUMBER				{	create_number(code, $1, 1);			}			
+	|	identifier
+	;
+identifier:	IDENTIFIER			{	check_identifier($1);
+							create_number(code, zmienne[$1].store, 1);	}
+	|	IDENTIFIER LB identifier RB	{	check identifier($1);
+							create_number(code, $3, 1);
+							create_number(code, zmienne[$1].store, 0);
+							ADD(1)						}
+	'		
+%%
+
+
+void check_identifier(string name){
+	if( zmienne.find(name) == zmienne.end() ){
+		string err = string("Niezadeklarowana zmienna \"") + string(name) + string("\" w linii ");
+		yyerror(concatStringInt(err, yylineno).c_str());
+	} 
+}
+
+
+/************************************************************************/
+/***** PRZEBIEGI ********************************************************/
+/************************************************************************/
+
+void zapamietajPozycjeEtykiet(map<string, string> &ety_pos){
+        for(int j=0 ; j<code.size(); j++){
+                if(isPrefix("E", code[j])){
+                        ostringstream ss;
+                        ss << j;
+                        ety_pos[code[j]] = ss.str();
+                        code.erase(code.begin()+j);
+                        j--;
+                }
+        }
+}
+
+void podmienEtykiety(map<string, string> &ety_pos){
+       for(int j=0 ; j<code.size() ; j++)
+                if(isPrefix("JUMP", code[j]) || isPrefix("JZERO", code[j]) || isPrefix("JODD", code[j]))
+                        code[j] = replaceLastWord( code[j], ety_pos[ getLastWord(code[j]) ] );
+}
+
+void wypiszAssembler(){
+	for(int j=0; j<code.size(); j++)
+		cout << code[j] << endl;
+	cout << "HALT" << endl;
+}
+
+/************************************************************************/
+/******** MAIN **********************************************************/
+/************************************************************************/
+
+int main()
+{
+	yyparse();
+	map<string, string> ety_pos;
+	zapamietajPozycjeEtykiet(ety_pos);
+	podmienEtykiety(ety_pos);
+	wypiszAssembler();
+}
+
+
+void yyerror(const char *s){
+        cout << "Blad. " << s << endl;
+        exit(0);
+}

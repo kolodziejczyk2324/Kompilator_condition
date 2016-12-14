@@ -1,0 +1,23 @@
+VAR
+	a[4] i
+BEGIN
+	i := 0;
+	a[i] := i;
+	i := i + 1;
+	a[i] := i;
+	i := i + 1;
+	a[i] := i;
+	i := i + 1;
+	a[i] := i;
+	WRITE a[0];
+	WRITE a[1];
+	WRITE a[2];
+	WRITE a[3];
+END
+
+OUTPUT
+0
+1
+2
+3
+ENDOUTPUT

@@ -1,0 +1,21 @@
+VAR
+	a b c
+BEGIN
+	a := 11;
+	b := 16 + a;
+	WRITE b;
+	c := 1;
+	c := c + c;
+	WRITE c;
+	c := c - 1;
+	WRITE c;
+	a := b - c;
+	WRITE a;
+END
+
+OUTPUT
+27
+2
+1
+26
+ENDOUTPUT

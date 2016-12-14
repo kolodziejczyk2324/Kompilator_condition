@@ -1,0 +1,31 @@
+VAR
+	a tab[5]
+BEGIN
+	a := 5;
+	IF a < 4 THEN
+		WRITE 1;
+	ELSE
+		WRITE 2;
+	ENDIF
+	tab[0] := 10;
+	IF 5 < tab[0] THEN
+		tab[1] := 8; 
+	ELSE
+		tab[1] := 15;
+	ENDIF
+	IF tab[0] < tab[1] THEN
+		WRITE tab[1];
+	ELSE
+		tab[2] := tab[0] + tab[1];
+	ENDIF
+	IF 5 < 1000 THEN
+		WRITE tab[2]; 
+	ELSE
+		WRITE tab[0];
+	ENDIF
+END
+
+OUTPUT
+2
+18
+ENDOUTPUT

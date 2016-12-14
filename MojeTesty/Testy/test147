@@ -1,0 +1,34 @@
+VAR
+	a[4] b
+BEGIN
+	a[0] := 5;
+	a[1] := 10;
+	a[2] := 15;
+	b := 7;
+	a[3] := a[1] + b;
+	IF b <= a[0] THEN
+		a[0] := a[0] - 1;
+		WRITE 1;
+	ELSE
+		a[0] := 3 - a[0];
+		WRITE 2;
+		b := 0;
+	ENDIF
+	IF a[0] <= b THEN
+		WRITE 43;
+	ELSE
+		a[1] := a[0] - 2;
+		WRITE 4;
+	ENDIF
+	IF a[1] <= a[2]  THEN
+		WRITE a[0];
+	ELSE
+		WRITE 44;
+	ENDIF
+END
+
+OUTPUT
+2
+43
+0
+ENDOUTPUT

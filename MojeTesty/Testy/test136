@@ -1,0 +1,13 @@
+VAR
+	a[4] b c d e f a g h i j
+BEGIN
+	a[2] := 5;
+	i := a[2];
+	WRITE i;
+	i := a;
+	WRITE a[1];
+END
+
+OUTPUT
+Blad. Deklaracja istniejacej zmiennej "a" w linii 2
+ENDOUTPUT

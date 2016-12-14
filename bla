@@ -1,0 +1,8 @@
+commands:       command         
+        |
+        ;
+command:        WRITE value SREDNIK             {       code.push_back("PUT 1");        }
+        |       IDENTIFIER PRZYPISANIE exp SREDNIK      {       cout<<"To ja! :" << $1 << endl;
+                                                                create_number(code, zmienne[$1].store, 0);
+                                                                code.push_back("STORE 1");      }
+

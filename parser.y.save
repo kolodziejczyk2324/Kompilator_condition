@@ -1,0 +1,101 @@
+%{
+#include <cstdio>
+#include <iostream>
+#include <math.h>
+#include <sstream>
+
+using namespace std;
+
+extern "C" int yylex();
+extern "C" FILE *yyin;
+
+int modulo(int,int);
+int podziel(int a, int b);
+void yyerror(const char *s);
+
+int flag = 0;
+
+stringstream ss;
+%}
+
+%token NUMBER
+%token PLUS MINUS
+%token MULT DIV
+%token POW
+%token EOL
+%token OP CP
+%token ERR
+
+%left PLUS MINUS
+%left MULT DIV MOD
+%right POW
+%nonassoc UMINUS
+
+%%
+
+program       -> VAR vdeclarations BEGIN commands END
+
+vdeclarations -> vdeclarations pidentifier
+               | vdeclarations pidentifier[num]
+               |
+
+commands    -> commands command
+             |
+
+command     -> identifier := expression;
+             | IF condition THEN commands ELSE commands ENDIF
+             | WHILE condition DO commands ENDWHILE
+             | FOR pidentifier FROM value TO value DO commands ENDFOR
+             | FOR pidentifier FROM value DOWNTO value DO commands ENDFOR
+             | READ identifier;
+             | WRITE value;
+             | SKIP;
+
+expression  -> value
+             | value + value
+             | value - value
+             | value * value
+             | value / value
+             | value % value
+
+condition   -> value = value
+             | value <> value
+             | value < value
+             | value > value
+             | value <= value
+             | value >= value
+
+value       -> num
+             | identifier
+
+identifier:	
+pidentifier
+		| pidentifier[pidentifier]
+		| pidentifier[num]
+
+
+%%
+
+
+int main()
+{
+	yyparse();
+}
+
+void yyerror(const char *s){
+	cout << "Błąd.\n";
+	ss.str("");
+}
+
+int podziel(int a, int b){
+	return (a-modulo(a,b))/b;
+}
+
+int modulo(int liczba, int modulo)
+{
+	if(modulo == 0){
+		flag = 1;
+		return -1;
+	}
+	return (liczba % modulo + modulo) % modulo;
+}

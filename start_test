@@ -1,0 +1,47 @@
+#!/bin/bash
+make
+FILES="MojeTesty/Testy/*"
+dobrze=0
+zle=0
+for f in $FILES
+do
+	echo -e "\e[1;37m"$f;
+	flex MojeTesty/scan_wynik.l
+	gcc lex.yy.c -lfl
+	./a.out < $f > MojeTesty/output
+
+	flex MojeTesty/scan_kod.l
+	gcc lex.yy.c -lfl
+	./a.out < $f > MojeTesty/kod
+
+	./make < MojeTesty/kod > MojeTesty/assembler
+
+	flex MojeTesty/scan_error.l
+	gcc lex.yy.c -lfl
+	./a.out < MojeTesty/assembler > MojeTesty/error
+
+	if [[ -s MojeTesty/error ]] ; then
+		cp MojeTesty/error MojeTesty/output2
+	else
+		./interpreter MojeTesty/assembler > MojeTesty/output_temp
+
+		flex MojeTesty/scan_skomp.l
+		gcc lex.yy.c -lfl
+		./a.out < MojeTesty/output_temp > MojeTesty/output2
+		rm MojeTesty/output_temp
+	fi ;
+
+	if cmp -s MojeTesty/output MojeTesty/output2
+	then
+		echo -e "\e[0;32mDOBRZE";
+		dobrze=$((dobrze+1))
+	else
+		zle=$((zle+1))
+		echo -e "\e[0;31mZLE";
+	fi
+	echo ""
+	rm MojeTesty/assembler MojeTesty/kod MojeTesty/output MojeTesty/output2 MojeTesty/error
+done
+echo -e "\e[1;33mWYNIKI: "
+echo "Dobrze: "$dobrze
+echo "Zle:    "$zle

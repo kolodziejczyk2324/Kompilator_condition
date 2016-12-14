@@ -1,0 +1,20 @@
+VAR
+	a[10] b
+BEGIN
+	a[0] := 55;
+	b := a[0] + 15;
+	WRITE b;
+	a[7] := b - 7;
+	WRITE a[7];
+	a[2] := a[7] - a[0];
+	WRITE a[2];
+	a[2] := a[2] - a[2];
+	WRITE a[2];
+END
+
+OUTPUT
+70
+63
+8
+0
+ENDOUTPUT

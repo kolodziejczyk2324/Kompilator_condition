@@ -1,0 +1,23 @@
+VAR
+	a b c
+BEGIN
+	a := 11;
+	b := a - 5;
+	WRITE b;
+	c := 15 - a;
+	WRITE c;
+	a := 15-16;
+	WRITE a;
+	a := 19-12;
+	WRITE a;
+	c := a - b;
+	WRITE c;
+END
+
+OUTPUT
+6
+4
+0
+7
+1
+ENDOUTPUT

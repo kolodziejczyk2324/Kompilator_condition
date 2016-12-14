@@ -1,0 +1,24 @@
+VAR
+	a[5]
+BEGIN
+	a[0] := 5;
+	IF a[0] > 3 THEN
+		a[1] := a[0] + 5;
+		IF a[0] > a[1] THEN
+			a[3] := 1;
+		ELSE
+			a[3] := 300;
+			IF 250 > a[3] THEN
+				WRITE 5;
+			ELSE
+				WRITE 123;
+			ENDIF
+		ENDIF
+	ELSE
+		a[1] := 2;
+	ENDIF
+END
+
+OUTPUT
+123
+ENDOUTPUT
